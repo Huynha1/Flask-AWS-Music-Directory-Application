@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<style>
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			table-layout: fixed;
+			word-wrap: break-word;
+		}
+
+		th,
+		td {
+			text-align: left;
+			padding: 8px;
+			border: 1px solid black;
+		}
+
+		th {
+			background-color: #dddddd;
+		}
+
+		.table-container {
+			height: 400px;
+			overflow: auto;
+		}
+
+		th.year,
+		td.year {
+			width: 80px;
+		}
+
+		th.subscribe,
+		td.subscribe {
+			width: 160px;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>{{ username }}</h1>
+	<form action="/logout" method="get">
+		<button type="submit">Logout</button>
+	</form>
+	<h1>Subscriptions</h1>
+	<table>
+		<thead>
+			<tr>
+				<th>Artist</th>
+				<th>Title</th>
+				<th class="year">Year</th>
+				<th>Arist Image</th>
+				<th class="subscribe">Remove</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in subscriptions %}
+			<tr>
+				<td>{{ item.artist }}</td>
+				<td>{{ item.title }}</td>
+				<td class="year">{{ item.year }}</td>
+				<td><img src="{{ item['image_url'] }}"></td>
+				<td class="subscribe">
+					<form style="text-align: center;" action="/remove" method="POST">
+						<input type="hidden" name="email" value="{{ session['email'] }}">
+						<input type="hidden" name="title" value="{{ item.title }}">
+						<button type="submit">Remove</button>
+					</form>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<h1>Songs</h1>
+	<div style="display:flex;">
+		<form style="padding-bottom: 15px" method="POST" action="/query">
+			<label for="title">Title:</label>
+			<input type="text" id="title" name="title">
+			<label for="year">Year:</label>
+			<input type="number" id="year" name="year">
+			<label for="artist">Artist:</label>
+			<input type="text" id="artist" name="artist">
+			<input type="submit" value="Query">
+		</form>
+		<form style="padding-left: 5px;" method="POST" action="/reset">
+			<button type="submit">Reset</button>
+		</form>
+	</div>
+
+	{% if no_results %}
+	<div style="color: red; font-weight: bold; padding-bottom: 10px;" class="alert alert-info" role="alert">
+		No result is retrieved. Please query again
+	</div>
+	{% endif %}
+
+	{% if exist_error %}
+	<div style="color: red; font-weight: bold; padding-bottom: 10px;" class="alert alert-danger">
+		{{ exist_error }}
+	</div>
+	{% endif %}
+
+	<div class="table-container">
+		<table>
+			<tr>
+				<th>Artist</th>
+				<th>Title</th>
+				<th class="year">Year</th>
+				<th>Artist Image</th>
+				<th class="subscribe">Subscribe</th>
+			</tr>
+			{% for item in items %}
+			<tr>
+				<td>{{ item['artist'] }}</td>
+				<td>{{ item['title'] }}</td>
+				<td class="year">{{ item['year'] }}</td>
+				<td><img src="{{ item['image_url'] }}"></td>
+				<td class="subscribe">
+					<form style="text-align: center;" action="{{ url_for('subscribe') }}" method="post">
+						<input type="hidden" name="title" value="{{ item.title }}" />
+						<input type="hidden" name="artist" value="{{ item.artist }}" />
+						<input type="hidden" name="year" value="{{ item.year }}" />
+						<button type="submit" class="btn btn-primary">Subscribe</button>
+					</form>
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+
+	</div>
+
+</body>
+
+</html>

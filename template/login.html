@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Login</title>
+</head>
+
+<body>
+	<h1>Login</h1>
+	<form method="POST" action="/">
+		<label for="email">Email:</label><br>
+		<input type="email" id="email" name="email"><br>
+		<label for="password">Password:</label><br>
+		<input type="password" id="password" name="password"><br>
+		{% if error %}
+		<p style="color:red;">{{ error }}</p>
+		{% endif %}
+		<br>
+		<input type="submit" value="Login">
+		<input type="button" value="Register" onclick="location.href='/register';">
+	</form>
+</body>
+
+</html>
